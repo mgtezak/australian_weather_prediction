@@ -6,4 +6,4 @@ app/data/
 *DS_Store
 # *.DS_Store
 test_repo
-app/
+# app/
