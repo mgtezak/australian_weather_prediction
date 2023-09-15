@@ -1,7 +1,7 @@
 import map
 import time
 from datetime import datetime
-import pickle
+import pickle as pkl
 import warnings
 import sys
 warnings.filterwarnings("ignore")
@@ -21,52 +21,52 @@ title = "Live Prediction"
 sidebar_name = "Live Prediction"
 
 
-def coordinate(angle):
-    radians = (np.pi / 180) * angle
-    return [np.round(np.cos(radians), decimals= 2), np.round(np.sin(radians), decimals=2)]
-
-def check_empty(var):
-    return np.nan if var == ' ' else float(var)
-
-def check_empty_string(var):
-    return np.nan if var == ' ' else var
-
-columns = ['Date', 'Location', 'MinTemp', 'MaxTemp', 'Rainfall', 'Evaporation',
-       'Sunshine', 'WindGustDir', 'WindGustSpeed', 'WindDir9am', 'WindDir3pm',
-       'WindSpeed9am', 'WindSpeed3pm', 'Humidity9am', 'Humidity3pm',
-       'Pressure9am', 'Pressure3pm', 'Cloud9am', 'Cloud3pm', 'Temp9am',
-       'Temp3pm', 'RainToday']
-
-Locations = ['Albury', 'BadgerysCreek', 'Cobar', 'CoffsHarbour', 'Moree',
-       'Newcastle', 'NorahHead', 'NorfolkIsland', 'Penrith', 'Richmond',
-       'Sydney', 'SydneyAirport', 'WaggaWagga', 'Williamtown',
-       'Wollongong', 'Canberra', 'Tuggeranong', 'MountGinini', 'Ballarat',
-       'Bendigo', 'Sale', 'MelbourneAirport', 'Melbourne', 'Mildura',
-       'Nhil', 'Portland', 'Watsonia', 'Dartmoor', 'Brisbane', 'Cairns',
-       'GoldCoast', 'Townsville', 'Adelaide', 'MountGambier', 'Nuriootpa',
-       'Woomera', 'Albany', 'Witchcliffe', 'PearceRAAF', 'PerthAirport',
-       'Perth', 'SalmonGums', 'Walpole', 'Hobart', 'Launceston',
-       'AliceSprings', 'Darwin', 'Katherine', 'Uluru']
-
-#links = ['http://www.bom.gov.au/climate/dwo/IDCJDW2002.latest.shtml']
-links = ['http://www.bom.gov.au/climate/dwo/IDCJDW2002.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2005.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2029.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2030.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2084.latest.shtml',
-         'http://www.bom.gov.au/climate/dwo/IDCJDW2097.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2099.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2100.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2111.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2119.latest.shtml',
-         'http://www.bom.gov.au/climate/dwo/IDCJDW2124.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2125.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2139.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2145.latest.shtml',
-         'http://www.bom.gov.au/climate/dwo/IDCJDW2146.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2801.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2802.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2801.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW3005.latest.shtml',
-         'http://www.bom.gov.au/climate/dwo/IDCJDW3008.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW3022.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW3049.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW3050.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW3051.latest.shtml',
-         'http://www.bom.gov.au/climate/dwo/IDCJDW3059.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2110.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW3079.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW3101.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW4019.latest.shtml',
-         'http://www.bom.gov.au/climate/dwo/IDCJDW4154.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW4050.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW4128.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW5081.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW5041.latest.shtml',
-         'http://www.bom.gov.au/climate/dwo/IDCJDW5049.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW5072.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW6001.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW6081.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW8014.latest.shtml',
-         'http://www.bom.gov.au/climate/dwo/IDCJDW6110.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW6111.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW6119.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW6138.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW7021.latest.shtml',
-         'http://www.bom.gov.au/climate/dwo/IDCJDW7025.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW8002.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW8014.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW8048.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW8056.latest.shtml']
-
-
-pages = ['Title Side','Introduction to the Project and Visualization of the Data','Modeling: Preprocessing of the Data, Modeling and Results',
-         'Interpretability','Discussion']
-
-
-
 def run():
+
+    def coordinate(angle):
+        radians = (np.pi / 180) * angle
+        return [np.round(np.cos(radians), decimals= 2), np.round(np.sin(radians), decimals=2)]
+
+    def check_empty(var):
+        return np.nan if var == ' ' else float(var)
+
+    def check_empty_string(var):
+        return np.nan if var == ' ' else var
+
+    columns = ['Date', 'Location', 'MinTemp', 'MaxTemp', 'Rainfall', 'Evaporation',
+        'Sunshine', 'WindGustDir', 'WindGustSpeed', 'WindDir9am', 'WindDir3pm',
+        'WindSpeed9am', 'WindSpeed3pm', 'Humidity9am', 'Humidity3pm',
+        'Pressure9am', 'Pressure3pm', 'Cloud9am', 'Cloud3pm', 'Temp9am',
+        'Temp3pm', 'RainToday']
+
+    Locations = ['Albury', 'BadgerysCreek', 'Cobar', 'CoffsHarbour', 'Moree',
+        'Newcastle', 'NorahHead', 'NorfolkIsland', 'Penrith', 'Richmond',
+        'Sydney', 'SydneyAirport', 'WaggaWagga', 'Williamtown',
+        'Wollongong', 'Canberra', 'Tuggeranong', 'MountGinini', 'Ballarat',
+        'Bendigo', 'Sale', 'MelbourneAirport', 'Melbourne', 'Mildura',
+        'Nhil', 'Portland', 'Watsonia', 'Dartmoor', 'Brisbane', 'Cairns',
+        'GoldCoast', 'Townsville', 'Adelaide', 'MountGambier', 'Nuriootpa',
+        'Woomera', 'Albany', 'Witchcliffe', 'PearceRAAF', 'PerthAirport',
+        'Perth', 'SalmonGums', 'Walpole', 'Hobart', 'Launceston',
+        'AliceSprings', 'Darwin', 'Katherine', 'Uluru']
+
+    #links = ['http://www.bom.gov.au/climate/dwo/IDCJDW2002.latest.shtml']
+    links = ['http://www.bom.gov.au/climate/dwo/IDCJDW2002.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2005.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2029.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2030.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2084.latest.shtml',
+            'http://www.bom.gov.au/climate/dwo/IDCJDW2097.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2099.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2100.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2111.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2119.latest.shtml',
+            'http://www.bom.gov.au/climate/dwo/IDCJDW2124.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2125.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2139.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2145.latest.shtml',
+            'http://www.bom.gov.au/climate/dwo/IDCJDW2146.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2801.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2802.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2801.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW3005.latest.shtml',
+            'http://www.bom.gov.au/climate/dwo/IDCJDW3008.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW3022.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW3049.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW3050.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW3051.latest.shtml',
+            'http://www.bom.gov.au/climate/dwo/IDCJDW3059.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW2110.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW3079.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW3101.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW4019.latest.shtml',
+            'http://www.bom.gov.au/climate/dwo/IDCJDW4154.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW4050.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW4128.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW5081.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW5041.latest.shtml',
+            'http://www.bom.gov.au/climate/dwo/IDCJDW5049.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW5072.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW6001.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW6081.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW8014.latest.shtml',
+            'http://www.bom.gov.au/climate/dwo/IDCJDW6110.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW6111.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW6119.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW6138.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW7021.latest.shtml',
+            'http://www.bom.gov.au/climate/dwo/IDCJDW7025.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW8002.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW8014.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW8048.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW8056.latest.shtml']
+
+
+    pages = ['Title Side','Introduction to the Project and Visualization of the Data','Modeling: Preprocessing of the Data, Modeling and Results',
+            'Interpretability','Discussion']
+
+
     st.title(title)
     flowchart = st.button('Show flowchart')
     if flowchart:
@@ -176,8 +176,8 @@ def run():
                     df[new_col_name_y] = df[wind].apply(lambda x : coordinate(WindMapping[x])[1])
                     df.drop(wind, axis = 1, inplace= True)
             df['month'] = datetime.now().month
-            loaded_model = pickle.load(open('data/final_models/' + str(Location) + '.pkl', 'rb'))
-            loaded_scaler = pickle.load(open('data/fitted_scalers/' + str(Location) + '.pkl', 'rb'))
+            loaded_model = pkl.load(open('data/final_models/' + str(Location) + '.pkl', 'rb'))
+            loaded_scaler = pkl.load(open('data/fitted_scalers/' + str(Location) + '.pkl', 'rb'))
             feature_names = loaded_model.feature_names_in_
             scale_feats = loaded_scaler.feature_names_in_
             # Compare model feature names and scraped feature names. Drop in scraped data the differences
@@ -215,8 +215,8 @@ def run():
             shap.initjs()
             df1 = df.round(2)
             shap.force_plot(explainer.expected_value[int(y_pred)], shap_values[int(y_pred)], df1, show = False, matplotlib = True)
-            plt.savefig('./data/images/Forceplot.png')
+            plt.savefig('data/images/Forceplot.png')
             st.write('Feature interpretation by SHAP:')
-            st.image('./data/images/Forceplot.png', width = 1600)
+            st.image('data/images/Forceplot.png', width = 1000)
 
 

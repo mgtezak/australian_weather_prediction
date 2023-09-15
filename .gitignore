@@ -3,4 +3,5 @@ __pycache__/
 *.pyc
 *.pyo
 .DS_Store
-notebook.ipynb
+data/images/Forceplot.png
+data/images/screenshot.png
