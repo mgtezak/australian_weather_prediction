@@ -2,8 +2,4 @@ venv/
 __pycache__/
 *.pyc
 *.pyo
-app/data/csv_files
-app/data/final_models
-# app/data/fitted_scalers
-*DS_Store
-# *.DS_Store
+.DS_Store
