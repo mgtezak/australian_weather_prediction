@@ -63,8 +63,8 @@ def run():
             'http://www.bom.gov.au/climate/dwo/IDCJDW7025.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW8002.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW8014.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW8048.latest.shtml', 'http://www.bom.gov.au/climate/dwo/IDCJDW8056.latest.shtml']
 
 
-    pages = ['Title Side','Introduction to the Project and Visualization of the Data','Modeling: Preprocessing of the Data, Modeling and Results',
-            'Interpretability','Discussion']
+    # pages = ['Title Side','Introduction to the Project and Visualization of the Data','Modeling: Preprocessing of the Data, Modeling and Results',
+    #         'Interpretability','Discussion']
 
 
     st.title(title)
@@ -78,7 +78,7 @@ def run():
         st.bokeh_chart(map.fig2)
     if screenshot:
         st.image('./data/images/website_scraping.png')
-    Location = st.selectbox('Select a Location', tuple(sorted(('Albury', 'BadgerysCreek', 'Cobar', 'CoffsHarbour', 'Moree','Newcastle', 'NorahHead', 'NorfolkIsland', 'Penrith', 'Richmond','Sydney', 'SydneyAirport', 'WaggaWagga', 'Williamtown','Wollongong', 'Canberra', 'Tuggeranong', 'MountGinini', 'Ballarat','Bendigo', 'Sale', 'MelbourneAirport', 'Melbourne', 'Mildura','Nhil', 'Portland', 'Watsonia', 'Dartmoor', 'Brisbane', 'Cairns','GoldCoast', 'Townsville', 'Adelaide', 'MountGambier', 'Nuriootpa','Woomera', 'Albany', 'Witchcliffe', 'PearceRAAF', 'PerthAirport','Perth', 'SalmonGums', 'Walpole', 'Hobart', 'Launceston','AliceSprings', 'Darwin', 'Katherine', 'Uluru'))))
+    Location = st.selectbox('Select a Location', tuple(Locations))                                
     predict = st.button('Predict')
     if predict:
         with st.spinner('Scraping data from bom.gov.au'):
