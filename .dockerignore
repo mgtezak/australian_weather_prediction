@@ -1,8 +1,8 @@
-Dockerfile
-.git/
-.gitignore
 venv/
 __pycache__/
 *.pyc
 *.pyo
 .DS_Store
+
+data/images/Forceplot.png
+data/images/screenshot.png
