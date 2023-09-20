@@ -33,5 +33,3 @@ def run():
     rainfall = st.button('Show Distribution of Rainfall')
     if rainfall == True:
         st.image('data/images/rainfall.png')
-
-    

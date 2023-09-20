@@ -84,6 +84,8 @@ def run():
         with st.spinner('Scraping data from bom.gov.au'):
             options = Options()
             options.add_argument("--headless")
+            options.add_argument('--no-sandbox')
+            options.add_argument('--disable-dev-shm-usage')
             options.add_argument("--window-size=1920,1080")
             user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
             options.add_argument(f'user-agent={user_agent}')
@@ -163,12 +165,12 @@ def run():
         with st.spinner('Loading model and convert data'):
             time.sleep(2)
             vars_wind = ['WindGustDir', 'WindDir9am', 'WindDir3pm']
-
-            WindMapping = {'E' : 0, 'ENE' : 22.5, 'NE' : 45, 'NNE' : 67.5,
-                           'N' : 90, 'NNW' : 112.5, 'NW' : 135, 'WNW' : 157.5,
-                           'W' : 180, 'WSW' : 202.5, 'SW' : 225, 'SSW' : 247.5,
-                           'S' : 270, 'SSE' : 292.5, 'SE' : 315, 'ESE' : 337.5,
-                           }
+            WindMapping = {
+                'E' : 0, 'ENE' : 22.5, 'NE' : 45, 'NNE' : 67.5,
+                'N' : 90, 'NNW' : 112.5, 'NW' : 135, 'WNW' : 157.5,
+                'W' : 180, 'WSW' : 202.5, 'SW' : 225, 'SSW' : 247.5,
+                'S' : 270, 'SSE' : 292.5, 'SE' : 315, 'ESE' : 337.5,
+            }
             for wind in vars_wind:
                     new_col_name_x = 'X_' + wind
                     new_col_name_y = 'Y_' + wind
@@ -176,8 +178,8 @@ def run():
                     df[new_col_name_y] = df[wind].apply(lambda x : coordinate(WindMapping[x])[1])
                     df.drop(wind, axis = 1, inplace= True)
             df['month'] = datetime.now().month
-            loaded_model = pkl.load(open('data/final_models/' + str(Location) + '.pkl', 'rb'))
-            loaded_scaler = pkl.load(open('data/fitted_scalers/' + str(Location) + '.pkl', 'rb'))
+            loaded_model = pkl.load(open(f'data/final_models/{Location}.pkl', 'rb'))
+            loaded_scaler = pkl.load(open(f'data/fitted_scalers/{Location}.pkl', 'rb'))
             feature_names = loaded_model.feature_names_in_
             scale_feats = loaded_scaler.feature_names_in_
             # Compare model feature names and scraped feature names. Drop in scraped data the differences
@@ -192,8 +194,6 @@ def run():
             st.write(df)
         with st.spinner('Scaling data'):
             time.sleep(1)
-            #loaded_model = pickle.load(open('./Models/' + str(Location) + '.pkl', 'rb'))
-            #loaded_scaler = pickle.load(open('./Models/' + str(Location) + '_scaler.pkl', 'rb'))
             df[scale_feats] = loaded_scaler.transform(df[scale_feats])
             st.write('Scaled data')
             st.write(df)
@@ -217,6 +217,4 @@ def run():
             shap.force_plot(explainer.expected_value[int(y_pred)], shap_values[int(y_pred)], df1, show = False, matplotlib = True)
             plt.savefig('data/images/Forceplot.png')
             st.write('Feature interpretation by SHAP:')
-            st.image('data/images/Forceplot.png', width = 1000)
-
-
+            st.image('data/images/Forceplot.png', width = 1200)

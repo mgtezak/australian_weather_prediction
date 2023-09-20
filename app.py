@@ -4,7 +4,7 @@ import config
 from tabs import title_page, exploring_and_dataviz, modeling, live_prediction, discussion
 
 
-st.set_page_config(page_title=config.TITLE, layout="wide")
+st.set_page_config(page_title=config.TITLE, layout="wide", page_icon='🇦🇺')
 
 with open("style.css", "r") as f:
     style = f.read()

@@ -4,12 +4,9 @@ import pandas as pd
 title = "Modeling"
 sidebar_name = "Modeling"
 
-
 def run():
 
     st.title(title)
-
-    st.image('data/images/naive_modeling_pipeline.jpg')
     text_1 = st.button('Naive modeling pipeline')
     if text_1 == True:
         st.write('''
@@ -34,8 +31,8 @@ def run():
         - Model with Random Forest Classifier with default parameters
         - Save F1 score for each location
         ''')
+        st.image('data/images/naive_modeling_pipeline.jpg')
 
-    st.image('data/images/modeling_pipeline.jpg')
     show_pipeline = st.button('Elaborate modeling pipeline')
     if show_pipeline == True:
         st.write('*Data Cleaning:*')
@@ -43,6 +40,7 @@ def run():
         - Delete columns with > 40% missing values
         - Interpolate remaining NaN values
         ''')
+        st.image('data/images/modeling_pipeline.jpg')
 
         st.write('*Feature engineering:*')
         st.write('''
@@ -68,7 +66,6 @@ def run():
 
 
 
-    st.image('data/images/beeplot.png')
     text_3 = st.button('Evaluation')
     if text_3 == True:
         st.write('*Evaluation:*')
@@ -78,8 +75,8 @@ def run():
         - Significant improvement in F1 score for locations with more of rain
         - Final F1 score (weighted average) for the entire dataset: 0.6558 (vs 0.6073 as the "naive" score)
         ''')
-    
-    st.image('data/images/scores_rainfall.png')
+        st.image('data/images/beeplot.png')
+
     text_4 = st.button('Challenges')
     if text_4 == True:
         st.write('*Challenges:*')
@@ -88,3 +85,4 @@ def run():
         - Especially pronounced in dryer regions due to target imbalance  
         - Lack of data
         ''')
+        st.image('data/images/scores_rainfall.png')
